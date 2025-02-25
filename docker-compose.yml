@@ -4,12 +4,10 @@ services:
     container_name: mysql_db    
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-            
     ports:
       - "3306:3306"
     volumes:
-     - mysql_data:/var/lib/mysql
-    
+      - mysql_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -22,5 +20,6 @@ services:
       PMA_PASSWORD: rootpassword
     ports:
       - "9000:80"
-    volumes:
-      mysql_data:
+
+volumes:
+  mysql_data:
