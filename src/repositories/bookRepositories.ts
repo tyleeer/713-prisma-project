@@ -4,13 +4,39 @@ import { BookQueriesParams } from '../models/types';
 const prisma = new PrismaClient();
 
 export function getAllBooks() {
-    return prisma.book.findMany();
+    return prisma.book.findMany({
+        select: {
+            id: true,
+            title: true,
+            isbn: true,
+            author: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    organization: {
+                        select: {
+                            organizationName: true
+                        }
+                    }
+                }
+            },
+            bookCategories: {
+                select: {
+                    category: {
+                        select: {
+                            categoryName: true
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 export function getFilteredBooks(params: BookQueriesParams) {
     const whereConditions: any = {};
     const borrowingDetailsConditions: any[] = [];
-    const includedData: any = {};
+    const othersSelected: any = {};
 
     // Title filter
     if (params.title !== null && params.title !== "") {
@@ -19,39 +45,46 @@ export function getFilteredBooks(params: BookQueriesParams) {
         };
     }
 
-    // Return status filter
-    if (params.isReturned !== null) {
-        borrowingDetailsConditions.push({
-            returnDate: params.isReturned ? {
-                not: null
-            } : {
-                equals: null
-            }
-        });
-    }
-
     // Due date filter
-    if (params.dueDate !== null) {
-        borrowingDetailsConditions.push({
-            dueDate: {
-                lt: params.dueDate
+    if ([params.dueDateStart, params.dueDateEnd].every(param => param !== null)) {
+        borrowingDetailsConditions.push(
+            {
+                dueDate: {
+                    gte: params.dueDateStart,
+                    lt: params.dueDateEnd
+                }
+            },
+            {
+                returnDate: {
+                    equals: null
+                }
             }
-        });
+        );
     }
 
     // Only add borrowingDetails filter if we have any conditions
     if (borrowingDetailsConditions.length > 0) {
         whereConditions.borrowingDetails = {
-            some: {
+            every: {
                 AND: borrowingDetailsConditions
             }
         };
 
-        includedData.borrowingDetails = true;
+        othersSelected.borrowingDetails = {
+            select: {
+                dueDate: true,
+                returnDate: true
+            }
+        };
     }
 
     return prisma.book.findMany({
         where: whereConditions,
-        include: includedData
+        select: {
+            id: true,
+            title: true,
+            isbn: true,
+            ...othersSelected
+        }
     });
 }

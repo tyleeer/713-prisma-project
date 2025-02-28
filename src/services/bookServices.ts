@@ -7,8 +7,9 @@ export const getAllBooks = () => {
 
 export const getFilteredBooks = (params: BookQueriesParamsExpress) => {
     const title = typeof params.title === 'string' ? params.title : null;
-    const dueDate = params.dueDate ? new Date(params.dueDate as string) : null;
-    const isReturned = params.isReturned ? `${params.isReturned}`.toLowerCase() === 'true' : null;
+    const dueDateStart = params.dueDate ? new Date(params.dueDate as string) : null;
+    const dueDateEnd = dueDateStart ? new Date(dueDateStart) : null;
+    dueDateEnd?.setUTCHours(23, 59, 59);
 
-    return repo.getFilteredBooks({ title, dueDate, isReturned });
+    return repo.getFilteredBooks({ title, dueDateStart, dueDateEnd });
 }

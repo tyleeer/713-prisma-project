@@ -51,6 +51,6 @@ export interface BookQueriesParamsExpress {
 }
 export interface BookQueriesParams {
     title: string | null;
-    dueDate: Date | null;
-    isReturned: boolean | null;
+    dueDateStart: Date | null;
+    dueDateEnd: Date | null;
 }
