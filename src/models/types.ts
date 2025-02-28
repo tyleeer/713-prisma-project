@@ -1,3 +1,5 @@
+import { ParsedQs } from 'qs';
+
 export interface CustomError extends Error {
     status?: number;
 }
@@ -40,4 +42,15 @@ export interface BorrowingDetail {
     isbn: string; // To link with Book
     dueDate: Date;
     returnDate?: Date; // Optional, null if not returned yet
+}
+
+export interface BookQueriesParamsExpress {
+    title: string | ParsedQs | (string | ParsedQs)[] | undefined;
+    dueDate: string | ParsedQs | (string | ParsedQs)[] | undefined;
+    isReturned: string | ParsedQs | (string | ParsedQs)[] | undefined;
+}
+export interface BookQueriesParams {
+    title: string | null;
+    dueDate: Date | null;
+    isReturned: boolean | null;
 }

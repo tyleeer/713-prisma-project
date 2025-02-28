@@ -1,6 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import { CustomError } from './models/types';
+import bookRouter from './routes/bookRoutes';
+import authorRouter from './routes/authorRoutes';
+import memberRouter from './routes/memberRoutes';
 
 dotenv.config();
 const app = express();
@@ -9,6 +12,9 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());           // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use("/books", bookRouter);
+app.use("/authors", authorRouter);
+app.use("/members", memberRouter);
 
 // Basic route
 app.get('/', (req: Request, res: Response) => {
