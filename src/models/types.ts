@@ -44,13 +44,21 @@ export interface BorrowingDetail {
     returnDate?: Date; // Optional, null if not returned yet
 }
 
+type QueryParam = string | ParsedQs | (string | ParsedQs)[];
+
 export interface BookQueriesParamsExpress {
-    title: string | ParsedQs | (string | ParsedQs)[] | undefined;
-    dueDate: string | ParsedQs | (string | ParsedQs)[] | undefined;
-    isReturned: string | ParsedQs | (string | ParsedQs)[] | undefined;
+    title?: QueryParam;
+    dueDate?: QueryParam;
+    isReturned?: QueryParam;
+    pageSize: number;
+    pageNo: number;
+    keyword?: QueryParam;
 }
 export interface BookQueriesParams {
-    title: string | null;
-    dueDateStart: Date | null;
-    dueDateEnd: Date | null;
+    title?: string;
+    dueDateStart?: Date;
+    dueDateEnd?: Date;
+    pageSize: number;
+    pageNo: number;
+    keyword?: string;
 }
