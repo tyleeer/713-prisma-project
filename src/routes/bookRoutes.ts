@@ -4,12 +4,13 @@ import { getAllBooks, getFilteredBooks } from "../services/bookServices";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
+    let pageSize, pageNo, keyword;
     try {
         // Parse query parameters
         const { title, dueDate, isReturned } = req.query;
-        const pageSize = parseInt(req.query.pageSize as string) || 5;
-        const pageNo = parseInt(req.query.pageNo as string) || 1;
-        const keyword = req.query.keyword as string;
+        pageSize = parseInt(req.query.pageSize as string) || 5;
+        pageNo = parseInt(req.query.pageNo as string) || 1;
+        keyword = req.query.keyword as string;
 
         // Choose query based on filter presence
         let result;
@@ -41,6 +42,9 @@ router.get("/", async (req: Request, res: Response) => {
         }
 
         res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        if (keyword) console.log(`Request is completed. with pageNo=${pageNo}, pageSize=${pageSize} and keyword=${keyword}`);
+        else console.log(`Request is completed. with pageNo=${pageNo} and pageSize=${pageSize}`);
     }
 });
 

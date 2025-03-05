@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { BookQueriesParams, BookQueriesParamsExpress } from '../models/types';
+import { BookQueriesParams } from '../models/types';
 
 const prisma = new PrismaClient();
 
@@ -64,6 +64,20 @@ export async function getFilteredBooks(params: BookQueriesParams) {
                 category: {
                     select: {
                         categoryName: true
+                    }
+                }
+            }
+        },
+        borrowingDetails: {
+            select: {
+                borrowing: {
+                    select: {
+                        member: {
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                            }
+                        }
                     }
                 }
             }
@@ -134,9 +148,18 @@ export async function getFilteredBooks(params: BookQueriesParams) {
                 },
                 {
                     author: {
-                        firstName: {
-                            contains: keyword
-                        }
+                        OR: [
+                            {
+                                firstName: {
+                                    contains: keyword
+                                }
+                            },
+                            {
+                                lastName: {
+                                    contains: keyword
+                                }
+                            }
+                        ],
                     }
                 },
                 {
@@ -144,9 +167,18 @@ export async function getFilteredBooks(params: BookQueriesParams) {
                         some: {
                             borrowing: {
                                 member: {
-                                    firstName: {
-                                        contains: keyword
-                                    }
+                                    OR: [
+                                        {
+                                            firstName: {
+                                                contains: keyword
+                                            }
+                                        },
+                                        {
+                                            lastName: {
+                                                contains: keyword
+                                            }
+                                        }
+                                    ],
                                 }
                             }
                         },
