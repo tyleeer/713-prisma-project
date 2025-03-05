@@ -10,8 +10,8 @@ export const getAllBooks = async (params: BookQueriesParamsExpress) => {
 
     const { totalBooks, books } = await repo.getAllBooks({ pageNo, pageSize });
 
-    if (totalBooks == 0) {
-        throw new Error("No event found.");
+    if (books.length == 0) {
+        throw new Error("No book found.");
     }
 
     const totalPages = Math.ceil(totalBooks / pageSize);
@@ -43,8 +43,8 @@ export const getFilteredBooks = async (params: BookQueriesParamsExpress) => {
 
     const { totalBooks, books } = await repo.getFilteredBooks({ title, dueDateStart, dueDateEnd, pageNo, pageSize, keyword });
 
-    if (totalBooks == 0) {
-        throw new Error("No event found.");
+    if (books.length == 0) {
+        throw new Error("No book found.");
     }
 
     const totalPages = Math.ceil(totalBooks / pageSize);

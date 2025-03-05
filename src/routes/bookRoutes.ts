@@ -32,8 +32,8 @@ router.get("/", async (req: Request, res: Response) => {
     } catch (error) {
         console.error("Error fetching books:", error);
 
-        if ((error as Error).message === "No event found.") {
-            res.status(404).send("No event found");
+        if ((error as Error).message === "No book found.") {
+            res.status(404).send("No book found");
             return;
         } else if ((error as Error).message === "Invalid pageNo or pageSize") {
             res.status(400).send("Invalid pageNo or pageSize");
