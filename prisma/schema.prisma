@@ -5,9 +5,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Book {
@@ -19,7 +25,7 @@ model Book {
   bookCategories   BookCategory[]
   borrowingDetails BorrowingDetail[]
 
-  @@index([title(length: 191)])
+  @@index([title])
 }
 
 model Category {
@@ -46,7 +52,7 @@ model Author {
   organizationId Int?
   books          Book[]
 
-  @@index([lastName(length: 100), firstName(length: 100)])
+  @@index([lastName, firstName])
 }
 
 model Organization {
@@ -54,7 +60,7 @@ model Organization {
   organizationName String   @db.VarChar(255)
   authors          Author[]
 
-  @@index([organizationName(length: 191)])
+  @@index([organizationName])
 }
 
 model Member {
@@ -72,7 +78,7 @@ model Borrowing {
   id               Int               @id @default(autoincrement())
   member           Member            @relation(fields: [memberId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   memberId         Int
-  borrowDate       DateTime          @default(now()) @db.DateTime(0)
+  borrowDate       DateTime          @default(now()) @db.Timestamp(3)
   borrowingDetails BorrowingDetail[]
 
   @@index([memberId, borrowDate])
@@ -84,8 +90,8 @@ model BorrowingDetail {
   borrowingId Int
   book        Book      @relation(fields: [bookId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   bookId      Int
-  dueDate     DateTime  @db.DateTime(0)
-  returnDate  DateTime? @db.DateTime(0)
+  dueDate     DateTime  @db.Timestamp(3)
+  returnDate  DateTime? @db.Timestamp(3)
 
   @@index([borrowingId])
   @@index([bookId])
